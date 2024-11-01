@@ -10,7 +10,7 @@ def filter_data(df:pd.DataFrame):
     filter1 = df["CustomerID"].isna()
     filter2 = df["Quantity"] < 0
     filter3 = df["UnitPrice"] < 0
-    df_filtered = df[~filter1, ~filter2, ~filter3]
+    df_filtered = df[~filter1 & ~filter2 & ~filter3]
     return df_filtered
 
 def loyalty_customers(df:pd.DataFrame, min_purchases:int) -> pd.DataFrame: #check it looks right 
@@ -27,7 +27,7 @@ def quarterly_revenue(df:pd.DataFrame):
 
 def high_demand_products(df:pd.DataFrame, top_n:int):
     totals = df.groupby("Description")["Quantity"].sum() #groups by item description and sums quantity of each item
-    sorted_products = totals.sort_values(by="Quantity", ascending=False) #sort values by quantity in descending order, resulting in toppest highest
+    sorted_products = totals.sort_values(ascending=False) #sort values by quantity in descending order, resulting in toppest highest
     top_products = sorted_products.head(top_n) #returns the toppest values based on inputted argument. 
     return top_products 
 
@@ -49,3 +49,11 @@ top_products = high_demand_products(filtered_data, 5)
 buying_patterns = purchase_patterns(filtered_data)
 
 print(filtered_data.head())
+
+print(loyal_customers)
+
+print(revenue_summary)
+
+print(top_products)
+
+print(buying_patterns)
