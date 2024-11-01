@@ -6,9 +6,11 @@ def import_data(filename:str): #check for CSV!! does read_excel read csv??  coul
     df = pd.read_excel(filename)
     return df
 
-def filter_data(df:pd.DataFrame): #does the or thingy work? 
-    df.dropna(subset=["CustomerID"]) 
-    df_filtered = df[(df["Quantity"] >= 0) | (df["UnitPrice"] >= 0)]
+def filter_data(df:pd.DataFrame):
+    filter1 = df["CustomerID"].isna()
+    filter2 = df["Quantity"] < 0
+    filter3 = df["UnitPrice"] < 0
+    df_filtered = df[~filter1, ~filter2, ~filter3]
     return df_filtered
 
 def loyalty_customers(df:pd.DataFrame, min_purchases:int) -> pd.DataFrame: #check it looks right 
@@ -33,3 +35,17 @@ def high_demand_products(df:pd.DataFrame, top_n:int):
 def purchase_patterns(df: pd.DataFrame) -> pd.DataFrame:    
     return df.groupby("Description").agg(avg_quantity = ("Quantity", "mean"), avg_unit_price=("UnitPrice", "mean")) #aggregates based on mean quantity/mean unit price of product
 
+
+data = import_data(filename)
+
+filtered_data = filter_data(data)
+
+loyal_customers = loyalty_customers(filtered_data, 5)
+
+revenue_summary = quarterly_revenue(filtered_data)
+
+top_products = high_demand_products(filtered_data, 5)
+
+buying_patterns = purchase_patterns(filtered_data)
+
+print(filtered_data.head())
